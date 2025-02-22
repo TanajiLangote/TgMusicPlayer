@@ -14,17 +14,17 @@ from helpers.filters import command, other_filters
 from helpers.decorators import errors
 
 
-@Client.on_message(command("splay") & other_filters)
+@Client.on_message(command("play") & other_filters)
 @errors
 async def play(_, message: Message):
     audio = (message.reply_to_message.audio or message.reply_to_message.voice) if message.reply_to_message else None
 
-    res = await message.reply_text("🧨 Processing......")
+    res = await message.reply_text(" Processing...... \n Join @TeleVcplayer")
 
     if audio:
         if round(audio.duration / 60) > DURATION_LIMIT:
             raise DurationLimitError(
-                f"Videos longer than {DURATION_LIMIT} minute(s) aren't allowed, the provided video is {audio.duration / 60} minute(s)"
+                f"Videos longer than {DURATION_LIMIT} minute(s) aren't allowed, the provided video is {audio.duration / 60} minute(s) \n Join @TeleVcplayer"
             )
 
         file_name = audio.file_unique_id + "." + (
@@ -56,7 +56,7 @@ async def play(_, message: Message):
                         break
 
         if offset in (None,):
-            await res.edit_text("`You did not give me anything to play`")
+            await res.edit_text("`You did not give me anything to play \n Join @TeleVcplayer`")
             return
 
         url = text[offset:offset + length]
@@ -64,7 +64,7 @@ async def play(_, message: Message):
 
     if message.chat.id in callsmusic.active_chats:
         position = await queues.put(message.chat.id, file=file)
-        await res.edit_text(f"✅ Queued at position {position} 🎧")
+        await res.edit_text(f" Queued at position {position} \n Join @TeleVcplayer")
     else:
-        await res.edit_text("`🎶 Playing...`")
+        await res.edit_text("` Playing... `")
         await callsmusic.set_stream(message.chat.id, file)
